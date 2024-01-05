@@ -7,7 +7,8 @@ import {
     Pressable,
     TextInput,
     Button,
-    Image
+    Image,
+    Alert
 } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Ionicons, Feather } from '@expo/vector-icons'
@@ -87,6 +88,8 @@ const HomeScreen = () => {
         }
       };
 
+
+    console.log("Route: ",route)
     return (
         <>
             <View>
@@ -116,7 +119,7 @@ const HomeScreen = () => {
                             <Feather name="search" size={24} color="black" />
                             <TextInput
                                 placeholderTextColor="black"
-                                placeholder={route?.params ? route.params.input : "Enter Your Destination"}
+                                placeholder={route?.params ? route?.params?.input : "Enter Your Destination"}
 
                             />
                         </Pressable>
@@ -190,7 +193,7 @@ const HomeScreen = () => {
                         </Pressable>
                         {/* Search Button */}
                         <Pressable
-                            onPress={() => searchPlaces(route?.params.input)}
+                            onPress={() => searchPlaces(route?.params?.input)}
                             style={{
                                 paddingHorizontal: 10,
                                 borderColor: "#FFC72C",
