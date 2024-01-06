@@ -13,7 +13,6 @@ const PropertyCard = ({
     availableRooms,
 }) => {
 
-    console.log("property: ", property)
     const { width, height } = Dimensions.get("window");
     const navigation = useNavigation();
     return (

@@ -16,31 +16,7 @@ const PlacesScreen = () => {
 
   const [modalVisibile, setModalVisibile] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState([]);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      title: "Popular Places",
-      headerTitleStyle: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "white",
-      },
-      headerStyle: {
-        backgroundColor: "#003580",
-        height: 110,
-        borderBottomColor: "transparent",
-        shadowColor: "transparent",
-      },
-      headerLeft: () => (
-        <Ionicons onPress={() => navigation.goBack()} name='arrow-back-sharp' size={24} color="white" style={{ marginRight: 20 }} />
-      )
-    })
-  })
-
-  const applyFilter = (selectedFilter) => {
-
-  }
+  const [sortedData, setSortedData] = useState([])
 
   const data = [
     {
@@ -505,7 +481,6 @@ const PlacesScreen = () => {
   ];
 
 
-
   const filters = [
     {
       id: "0",
@@ -517,6 +492,68 @@ const PlacesScreen = () => {
     },
   ];
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: "Popular Places",
+      headerTitleStyle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "white",
+      },
+      headerStyle: {
+        backgroundColor: "#003580",
+        height: 110,
+        borderBottomColor: "transparent",
+        shadowColor: "transparent",
+      },
+      headerLeft: () => (
+        <Ionicons onPress={() => navigation.goBack()} name='arrow-back-sharp' size={24} color="white" style={{ marginRight: 20 }} />
+      )
+    })
+  })
+
+  const searchPlaces = data?.filter((item) => {
+    return item.place === route.params.place
+  });
+
+  console.log("searchPlaces", searchPlaces)
+
+
+
+  const applyFilter = (filter) => {
+    setModalVisibile(false)
+    switch (filter) {
+      case "cost:High to Low":
+        searchPlaces.map((val) => val.properties.sort(compare))
+        setSortedData(searchPlaces)
+        break;
+      case "cost:Low to High":
+        searchPlaces.map((val) => val.properties.sort(comparision))
+        setSortedData(searchPlaces)
+        break;
+    }
+  }
+
+  const compare = (a, b) => {
+    if (a.newPrice > b.newPrice) {
+      return -1;
+    }
+    if (a.newPrice < b.newPrice) {
+      return 1;
+    }
+    return 0;
+  }
+
+  const comparision = (a, b) => {
+    if (a.newPrice < b.newPrice) {
+      return -1;
+    }
+    if (a.newPrice > b.newPrice) {
+      return 1;
+    }
+    return 0;
+  }
 
 
   console.log(route.params)
@@ -559,23 +596,47 @@ const PlacesScreen = () => {
         </Pressable>
       </Pressable>
 
-      <ScrollView style={{ backgroundColor: "#F5F5F5" }}>
-        {data
-          ?.filter((item) => item.place === route.params.place)
-          .map((item) =>
-            item.properties.map((property, index) => (
-              <PropertyCard
-                key={index}
-                rooms={route.params.rooms}
-                children={route.params.children}
-                adults={route.params.adults}
-                selectedDates={route.params.selectedDates}
-                property={property}
-                availableRooms={property.rooms}
-              />
-            ))
-          )}
-      </ScrollView>
+
+      {
+        sortedData.length > 0 ? (
+          <ScrollView style={{ backgroundColor: "#F5F5F5" }}>
+            {sortedData
+              ?.filter((item) => item.place === route.params.place)
+              .map((item) =>
+                item.properties.map((property, index) => (
+                  <PropertyCard
+                    key={index}
+                    rooms={route.params.rooms}
+                    children={route.params.children}
+                    adults={route.params.adults}
+                    selectedDates={route.params.selectedDates}
+                    property={property}
+                    availableRooms={property.rooms}
+                  />
+                ))
+              )}
+          </ScrollView>
+        ) : (
+          <ScrollView style={{ backgroundColor: "#F5F5F5" }}>
+            {data
+              ?.filter((item) => item.place === route.params.place)
+              .map((item) =>
+                item.properties.map((property, index) => (
+                  <PropertyCard
+                    key={index}
+                    rooms={route.params.rooms}
+                    children={route.params.children}
+                    adults={route.params.adults}
+                    selectedDates={route.params.selectedDates}
+                    property={property}
+                    availableRooms={property.rooms}
+                  />
+                ))
+              )}
+          </ScrollView>
+        )
+      }
+
 
 
       <BottomModal
